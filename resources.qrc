@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/icons"/>
+    <qresource prefix="/">
+        <file>png/HacknetQtSE_Logo1.png</file>
+    </qresource>
+</RCC>
