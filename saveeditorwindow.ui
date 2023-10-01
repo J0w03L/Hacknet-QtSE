@@ -52,7 +52,7 @@
           <string notr="true"/>
          </property>
          <property name="indentation">
-          <number>20</number>
+          <number>8</number>
          </property>
          <property name="uniformRowHeights">
           <bool>false</bool>

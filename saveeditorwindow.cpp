@@ -9,7 +9,6 @@ SaveEditorWindow::SaveEditorWindow(QWidget *parent)
     ui->setupUi(this);
 
     // Find networkTree.
-    //QTreeWidget *networkTree = ui->centralwidget->findChild<QTreeWidget*>("networkTree", Qt::FindChildrenRecursively);
     QTreeWidget *networkTree = ui->networkTree;
 
     // Link up actions and stuff.
@@ -58,7 +57,6 @@ void SaveEditorWindow::on_actionOpenSave_triggered()
     }
 
     // Update the network tree.
-    //QTreeWidget *networkTree = ui->centralwidget->findChild<QTreeWidget*>("networkTree", Qt::FindChildrenRecursively);
     QTreeWidget *networkTree = ui->networkTree;
     networkTree->clear();
 
