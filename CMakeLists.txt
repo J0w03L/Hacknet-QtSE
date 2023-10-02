@@ -43,6 +43,8 @@ else()
             aboutwindow.h aboutwindow.cpp aboutwindow.ui
             resources.qrc
             savefile.h savefile.cpp
+            nodes.h
+
         )
     endif()
 endif()

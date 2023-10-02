@@ -9,6 +9,7 @@
 #include <QTreeWidgetItem>
 #include <iostream>
 #include "savefile.h"
+#include "nodes.h"
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class SaveEditorWindow; }
@@ -27,8 +28,10 @@ public slots:
 
 private:
     Ui::SaveEditorWindow *ui;
-
     SaveFile saveFile;
+    int selectedComputerIndex = -1;
+
+    bool updateComputerPanel(int index);
 
     // events
     void on_actionAbout_triggered();

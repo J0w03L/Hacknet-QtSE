@@ -63,12 +63,12 @@ void SaveEditorWindow::on_actionOpenSave_triggered()
     QList<QTreeWidgetItem*> itemList;
     size_t computerIndex = 0;
 
-    for (QPair<QString, QString> computer : this->saveFile.computers)
+    for (Node::Computer computer : this->saveFile.computers)
     {
         QTreeWidgetItem *item = new QTreeWidgetItem(networkTree);
 
-        item->setText(0, computer.first);   // IP
-        item->setText(1, computer.second);  // Name
+        item->setText(0, computer.ip);   // IP
+        item->setText(1, computer.name);  // Name
 
         itemList.append(item);
     }
@@ -79,7 +79,50 @@ void SaveEditorWindow::on_actionOpenSave_triggered()
 
 void SaveEditorWindow::networkTreeItemSelected(QTreeWidgetItem *item, int)
 {
-    int node = this->ui->networkTree->currentIndex().row();
-    qDebug() << "Selected computer node:" << node;
+    int nodeIndex = this->ui->networkTree->currentIndex().row();
+
+    if (updateComputerPanel(nodeIndex))
+    {
+        qDebug() << "Selected computer node:" << nodeIndex;
+        selectedComputerIndex = nodeIndex;
+    }
+
     return;
+}
+
+bool SaveEditorWindow::updateComputerPanel(int index)
+{
+    if (index >= this->saveFile.computers.length())
+    {
+        qDebug() << "Tried to updateComputerPanel with an index of" << index << "(len of saveFile.computers is" << saveFile.computers.length() << "); skipping!";
+        return false;
+    }
+
+    Node::Computer node = this->saveFile.computers.at(index);
+
+    ui->computerNameEdit->setText(node.name);
+    ui->computerIPEdit->setText(node.ip);
+    ui->computerIDEdit->setText(node.id);
+    ui->computerTypeEdit->setCurrentIndex(node.type - 1);
+    ui->computerSpecEdit->setCurrentIndex(node.spec.compare("mail") == 0 ? 1 : node.spec.compare("player") == 0 ? 2 : 0);
+
+    ui->netmapXEdit->setValue(node.location.x);
+    ui->netmapYEdit->setValue(node.location.y);
+    ui->netmapVisibleEdit->setCheckState(node.known ? Qt::Checked : Qt::Unchecked);
+
+    ui->securityLevelEdit->setValue(node.security.level);
+    ui->securityTraceTimeEdit->setValue(node.security.traceTime);
+    ui->securityProxyTimeEdit->setValue(node.security.proxyTime);
+    ui->securityPortsToCrackEdit->setValue(node.security.portsToCrack);
+    ui->securityAdminIPEdit->setText(node.security.adminIP);
+
+    ui->adminTypeEdit->setCurrentIndex(node.admin.type.compare("basic") == 0 ? 1 : node.admin.type.compare("fast") ? 2 : 0);
+    ui->adminResetPassEdit->setCheckState(node.admin.resetPass ? Qt::Checked : Qt::Unchecked);
+    ui->adminSuperEdit->setCheckState(node.admin.isSuper ? Qt::Checked : Qt::Unchecked);
+
+    ui->firewallComplexityEdit->setValue(node.firewall.complexity);
+    ui->firewallSolutionEdit->setText(node.firewall.solution);
+    ui->firewallDelayEdit->setValue(node.firewall.additionalDelay);
+
+    return true;
 }
