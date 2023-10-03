@@ -45,7 +45,7 @@ namespace Node
 
     typedef struct Computer
     {
-        QString index;
+        int index;
         QString name;
         QString ip;
 
