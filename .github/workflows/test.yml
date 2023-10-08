@@ -149,6 +149,7 @@ jobs:
         ${{ matrix.os == 'ubuntu-latest' && 'make' || 'cmake --build' }} ${{ matrix.os == 'windows-latest' && steps.strings.outputs.build-output-dir || '' }} ${{ matrix.os == 'windows-latest' && '--config' || '' }} ${{ matrix.os == 'windows-latest' && matrix.build_type || '' }}
         cd ${{ matrix.os == 'windows-latest' && steps.strings.outputs.build-output-dir || '' }}
         cd ${{ matrix.os == 'windows-latest' && matrix.build_type || '' }}
+        ${{ matrix.os == 'windows-latest' && 'windeployqt Hacknet-QtSE.exe' || '' }}
         ${{ matrix.os == 'windows-latest' && 'move Hacknet-QtSE.exe ../../Hacknet-QtSE.exe' || '' }}
 
     - name: Upload artifact
