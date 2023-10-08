@@ -147,16 +147,18 @@ jobs:
       run: |
         cmake CMakeLists.txt -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
         ${{ matrix.os == 'ubuntu-latest' && 'make' || 'cmake --build' }} ${{ matrix.os == 'windows-latest' && steps.strings.outputs.build-output-dir || '' }} ${{ matrix.os == 'windows-latest' && '--config' || '' }} ${{ matrix.os == 'windows-latest' && matrix.build_type || '' }}
+        ${{ matrix.os == 'windows-latest' && 'mkdir artifact' || '' }}
         cd ${{ matrix.os == 'windows-latest' && steps.strings.outputs.build-output-dir || '' }}
         cd ${{ matrix.os == 'windows-latest' && matrix.build_type || '' }}
         ${{ matrix.os == 'windows-latest' && 'windeployqt Hacknet-QtSE.exe' || '' }}
-        ${{ matrix.os == 'windows-latest' && 'move Hacknet-QtSE.exe ../../Hacknet-QtSE.exe' || '' }}
+        dir
+        ${{ matrix.os == 'windows-latest' && 'move * ../../artifact/' || '' }}
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3.1.3
       with:
         name: "Hacknet-QtSE-${{ matrix.os == 'ubuntu-latest' && 'Linux' || 'Windows' }}-${{ matrix.c_compiler }}-${{ matrix.cpp_compiler }}-${{ matrix.build_type }}"
-        path: ${{ matrix.os == 'ubuntu-latest' && 'Hacknet-QtSE' || 'Hacknet-QtSE.exe' }}
+        path: ${{ matrix.os == 'ubuntu-latest' && 'Hacknet-QtSE' || 'artifact' }}
 
     #- name: Test
     #  working-directory: ${{ steps.strings.outputs.build-output-dir }}
