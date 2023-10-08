@@ -111,20 +111,19 @@ jobs:
         curl https://raw.githubusercontent.com/zeux/pugixml/master/src/pugixml.cpp -o "pugixml.cpp"
 
     - name: Enable pugixml header-only
-      uses: jacobtomlinson/gha-find-replace@v3
+      uses: mingjun97/file-regex-replace@v1
       with:
-        include: "pugiconfig.hpp"
-        find: "// #define PUGIXML_HEADER_ONLY"
-        replace: "#define PUGIXML_HEADER_ONLY"
-        regex: false
+        include: 'pugiconfig\.hpp'
+        regex: '\/\/ #define PUGIXML_HEADER_ONLY'
+        replacement: '#define PUGIXML_HEADER_ONLY'
 
     - name: HACK - Force local pugixml header use
-      uses: jacobtomlinson/gha-find-replace@v3
+      uses: mingjun97/file-regex-replace@v1
       with:
-        find: "#include <pugixml.hpp>"
-        replace: '#include "pugixml.hpp"'
-        regex: false
-        
+        include: '^.*\.(c|h|cpp|hpp)$'
+        regex: '#include <pugixml\.hpp>'
+        replacement: '#include "pugixml.hpp"'
+
     - name: Set reusable strings
       # Turn repeated input strings (such as the build output directory) into step outputs. These step outputs can be used throughout the workflow file.
       id: strings
@@ -146,8 +145,11 @@ jobs:
       # Build your program with the given configuration. Note that --config is needed because the default Windows generator is a multi-config generator (Visual Studio generator).
       #run: cmake --build ${{ steps.strings.outputs.build-output-dir }} --config ${{ matrix.build_type }}
       run: |
-        cmake CMakeLists.txt
-        make
+        cmake CMakeLists.txt -DCMAKE_CXX_COMPILER=${{ matrix.cpp_compiler }} -DCMAKE_C_COMPILER=${{ matrix.c_compiler }} -DCMAKE_BUILD_TYPE=${{ matrix.build_type }}
+        ${{ matrix.os == 'ubuntu-latest' && 'make' || 'cmake --build' }} ${{ matrix.os == 'windows-latest' && steps.strings.outputs.build-output-dir || '' }} ${{ matrix.os == 'windows-latest' && '--config' || '' }} ${{ matrix.os == 'windows-latest' && matrix.build_type || '' }}
+        cd ${{ matrix.os == 'windows-latest' && steps.strings.outputs.build-output-dir || '' }}
+        cd ${{ matrix.os == 'windows-latest' && matrix.build_type || '' }}
+        ${{ matrix.os == 'windows-latest' && 'move Hacknet-QtSE.exe ../../Hacknet-QtSE.exe' || '' }}
 
     - name: Upload artifact
       uses: actions/upload-artifact@v3.1.3

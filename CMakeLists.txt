@@ -45,13 +45,6 @@ else()
     else()
         add_executable(Hacknet-QtSE
             ${PROJECT_SOURCES}
-
-
-            aboutwindow.h aboutwindow.cpp aboutwindow.ui
-            resources.qrc
-            savefile.h savefile.cpp
-            nodes.h
-
         )
     endif()
 endif()
